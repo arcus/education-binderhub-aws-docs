@@ -20,10 +20,16 @@ To create a BinderHub, follow the steps below.
 
 I used a t2.micro AWS EC2 instance to help set-up and manage my BinderHub (you could do this locally too if you wanted, but I preferred to have a separate machine for this that others could easily manage too). Follow the steps below to set up an instace:
 
-- Log in to the [AWS console](https://aws.amazon.com/) and go to the EC2 service.
-- Make sure you're in your desired region (Canada: `ca-central-1` for me) and click "Instances" in the dashboard.
-- Click "Launch Instance" and select a suitable AMI (I choose the "Ubuntu Server 18.04 LTS (HVM), SSD Volume Type").
-- In Step 2 (choose an instance type), Step 3 (configure instance) and Step 4 (add storage) leave the defaults.
+- Log in to the [AWS console](https://aws.amazon.com/) and go to the EC2 Dashboard.  You can use the search bar and type "EC2" or use the "Services" icon.  There may be several options, but choose "Dashboard".
+- In the upper bar of the console, use the drop down list to select your desired region (Canada: `ca-central-1` for me).  If this is the first time this region has been selected in EC2, you will have to approve adding it.  You will need billing or admin rights to be able to do this.
+- Click "Launch Instance" in the EC2 dashboard (this should appear in a box and will have an orange button.  In the drop-down menu, again select "Launch Instance"
+- In the following screen, first give your instance a helpful name, such as "My BinderHub".
+- In "Application and OS Images (Amazon Machine Image)," select a suitable AMI (I choose the "Ubuntu Server 22.04 LTS (HVM), SSD Volume Type").
+- In "Instance type", you can leave the "micro" default.
+- In "Key pair (login)", create a new RSA keypair using .pem (or, if you use PuTTY, .ppk).  Give the keypair a useful name and note where your private key downloads to (whatever your browser default is, probably in your "Downloads" directory.)
+- In "Network settings", allow HTTP, HTTPS, and SSH traffic:
+- In "Configure storage", leave the default values.
+
 - Add tags in Step 5 if you wish.
 - In Step 6 choose "Create a new security group" and add the following rules:
 ![security](img/security.png)
@@ -44,7 +50,7 @@ I used a t2.micro AWS EC2 instance to help set-up and manage my BinderHub (you c
 # AWS EKS ClusterConfig used to setup the BinderHub / JupyterNotebooks K8s cluster
 # using a workaround from https://discourse.jupyter.org/t/binder-deployed-in-aws-eks-domain-name-resolution-errors/766/10
 # to fix broken DNS resolution
---- 
+---
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
@@ -123,7 +129,7 @@ spec:
       use_registry: true
       image_prefix: <docker-id OR organization-name>/<prefix>-
       hub_url: https://<jupyterhub-URL> # e.g. https://hub.binder.example.com
-  
+
   cors: &cors
     allowOrigin: '*'
 
