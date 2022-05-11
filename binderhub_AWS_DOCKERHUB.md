@@ -22,23 +22,31 @@ I used a t2.micro AWS EC2 instance to help set-up and manage my BinderHub (you c
 
 - Log in to the [AWS console](https://aws.amazon.com/) and go to the EC2 Dashboard.  You can use the search bar and type "EC2" or use the "Services" icon.  There may be several options, but choose "Dashboard".
 - In the upper bar of the console, use the drop down list to select your desired region (Canada: `ca-central-1` for me).  If this is the first time this region has been selected in EC2, you will have to approve adding it.  You will need billing or admin rights to be able to do this.
-- Click "Launch Instance" in the EC2 dashboard (this should appear in a box and will have an orange button.  In the drop-down menu, again select "Launch Instance"
+- Click "Launch Instance" in the EC2 dashboard (this should appear in a box and will have an orange button.  In the drop-down menu, again select "Launch Instance".
+![](img/launch_instance_button.png)
 - In the following screen, first give your instance a helpful name, such as "My BinderHub".
 - In "Application and OS Images (Amazon Machine Image)," select a suitable AMI (I choose the "Ubuntu Server 22.04 LTS (HVM), SSD Volume Type").
 - In "Instance type", you can leave the "micro" default.
 - In "Key pair (login)", create a new RSA keypair using .pem (or, if you use PuTTY, .ppk).  Give the keypair a useful name and note where your private key downloads to (whatever your browser default is, probably in your "Downloads" directory.)
+![](img/create_keypair.png)
 - In "Network settings", allow HTTP, HTTPS, and SSH traffic:
+![](img/security_group.png)
 - In "Configure storage", leave the default values.
+- Click "Launch Instance" on the right side of the screen.
 
-- Add tags in Step 5 if you wish.
-- In Step 6 choose "Create a new security group" and add the following rules:
-![security](img/security.png)
-- Click "Review and Launch", then click "Launch".
-- Connect to the instance with SSH once it's ready.
+
+- Connect to the instance with SSH once it's ready:
+  * Click on the instance ID
+  * Click on the "Connect" button:
+  ![](img/connect_button.png)
+  * Follow the instructions
 - Once you're in it's a good idea to update ubuntu: `sudo apt-get update; sudo apt-get upgrade`.
 
 ## 2. Create a Cluster with EKS <a name="2"></a>
 
+- Install the `kubectl` dependency (see https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html and select "Linux" as the operating system)
+- Install the `eksctl` dependency (see https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)
+- Install the `awscli` dependency (see https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 - From within your EC2 instance, you should now go to the [AWS EKS docs](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html) and install `awscli`, `kubectl` and `eksctl` following the documentation. You'll also need to configure the AWS CLI following [these instructions](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
 - When you get to the section [Create your Amazon EKS cluster and compute](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html#eksctl-create-cluster), we need to do the following steps. These are required because EKS is no longer natively supporting docker, read more [here](https://github.com/weaveworks/eksctl/issues/942#issuecomment-515867547) and the solution comes from [here](https://gist.github.com/tobemedia/2144d74d232ccce8972613e8ae13b054).
   - run `ssh-keygen` and accept defaults to generate a key pair.
